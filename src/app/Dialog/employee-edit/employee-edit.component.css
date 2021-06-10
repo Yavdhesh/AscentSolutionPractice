@@ -1,0 +1,10 @@
+.mat-dialog-container {
+    height:900px;}
+
+    .example-full-width {
+      width: 100%;
+    }
+
+    .example-spacer {
+      flex: 1 1 auto;
+    }

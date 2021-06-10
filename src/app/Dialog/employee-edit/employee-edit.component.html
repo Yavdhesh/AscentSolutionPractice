@@ -1,0 +1,76 @@
+<h2 mat-dialog-title>Employee Edit Section</h2>
+<mat-dialog-content class="mat-typography">
+  <form [formGroup]="employeeForm">
+
+    <!-- <p>
+      <label for="firstname">First Name </label>
+      <input  type="text" id="firstname" name="firstname">
+    </p> -->
+    <mat-form-field  class="example-full-width">
+      <mat-label>FirstName</mat-label>
+      <input  matInput type="text" id="firstName" name="firstName"  placeholder="please enter first name" formControlName="firstName" >
+     </mat-form-field>
+
+     <mat-form-field  class="example-full-width">
+      <mat-label>LastName</mat-label>
+      <input  matInput type="text" id="lastName" name="lastName"  placeholder="please enter last name" formControlName="lastName" >
+     </mat-form-field>
+
+     <mat-form-field  class="example-full-width">
+      <mat-label>employeeID</mat-label>
+      <input  matInput type="text" id="employeeID" name="employeeID"  placeholder="please enter employeeID" formControlName="employeeID" >
+     </mat-form-field>
+
+
+
+    <!-- <p>
+      <label for="lastname">Last Name </label>
+      <input type="text" id="lastname" name="lastname">
+    </p> -->
+
+    <mat-form-field appearance="fill">
+      <mat-label>Your Birthdate</mat-label>
+      <input matInput (dateChange)='onDateChange($event)' [matDatepicker]="picker" id='dob' formControlName='dob' name="dob">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker ></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field  class="example-full-width">
+      <mat-label>Address</mat-label>
+      <input  matInput type="text" id="address" name="address"  placeholder="please enter address" formControlName="address" >
+     </mat-form-field>
+
+     <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>State</mat-label>
+      <mat-select matNativeControl  id="state" name="state"  formControlName="state">
+        <mat-option *ngFor="let state of stateList" name='state' #state [value]="state.value">
+          {{state.value}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="example-full-width">
+    <mat-label>City</mat-label>
+      <mat-select matNativeControl  id="city" name="city"  formControlName="city">
+        <mat-option *ngFor="let city of getCities(employeeForm.get('state').value)" [value]="city.value">
+          {{city.value}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field  class="example-full-width">
+      <mat-label>DepartName</mat-label>
+      <input  matInput type="text" id="departmentName" name="departmentName"  placeholder="please enter address" formControlName="departmentName" >
+     </mat-form-field>
+
+     <mat-form-field  class="example-full-width">
+      <mat-label>CoampanyName</mat-label>
+      <input  matInput type="text" id="companyName" name="companyName"  placeholder="please enter address" formControlName="companyName" >
+     </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="closeDialog('cancel')">Cancel</button>
+  <button mat-button (click)="closeDialog('done')" cdkFocusInitial>Done</button>
+</mat-dialog-actions>
