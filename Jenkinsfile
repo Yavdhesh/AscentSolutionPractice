@@ -19,7 +19,7 @@ pipeline {
          
          sh '''docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/ascentangularapp | awk \'{print $1 }\' | xargs -I {} docker stop {}  && \\
          docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/ascentangularapp | awk \'{print $1 }\' | xargs -I {} docker rm {} -f && \\
-         sudo kill -9 $(sudo lsof -t -i:80) && \\
+         sudo kill -9 $(sudo lsof -t -i:8081) && \\
          docker build . -t $DOCKER_REPO/ascentangularapp:$GIT_COMMIT -t $DOCKER_REPO/ascentangularapp:latest && \\
          echo "docker image was built and tagged" && \\
          docker image ls 
@@ -59,7 +59,7 @@ pipeline {
         sh '''echo $DOCKER_HUB_PASS | docker login --username=$DOCKER_REPO --password-stdin && \\
         docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/ascentangularapp | awk \'{print $1 }\' | xargs -I {} docker stop {}  && \\
         docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/ascentangularapp | awk \'{print $1 }\' | xargs -I {} docker rm {} -f && \\
-        sudo kill -9 $(sudo lsof -t -i:80) && \\
+        sudo kill -9 $(sudo lsof -t -i:8081) && \\
         echo "Running containers, stopped containers removed" && \\
         docker ps -a && \\
         docker image rm $(docker images --filter=reference=$DOCKER_REPO/ascentangularapp --format "{{.ID}}") -f && \\
