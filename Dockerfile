@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:14 as build-step
 
 WORKDIR /usr/src/app
 
@@ -8,6 +8,8 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 8082
+RUN npm run build --prod
 
-CMD [ "node", "server.js" ]
+# Stage 2
+FROM nginx:1.17.1-alpine
+COPY --from=build-step /usr/src/app/dist/AscentEmployeeSearch /usr/share/nginx/html
