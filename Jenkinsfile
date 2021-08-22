@@ -10,17 +10,17 @@ pipeline {
         stages { 
         stage ('Checkout the code') {  
         steps{               
-          checkout([$class: 'GitSCM', branches: [[name: '*/new-master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Yavdhesh/VeryBasicChatWebApp.git']]])               
+          checkout([$class: 'GitSCM', branches: [[name: '*/new-master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Yavdhesh/AscentSolutionPractice.git']]])               
         }
         }
         stage ('Build, Tag the Docker Image') { 
          steps{               
-         dir('/var/lib/jenkins/workspace/DockerCICDPipelineProject') {
+         dir('/var/lib/jenkins/workspace/ProjectAngularDockerPipeline') {
          
-         sh '''docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/verybasicchatapp | awk \'{print $1 }\' | xargs -I {} docker stop {}  && \\
-         docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/verybasicchatapp | awk \'{print $1 }\' | xargs -I {} docker rm {} -f && \\
+         sh '''docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/ascentangularapp | awk \'{print $1 }\' | xargs -I {} docker stop {}  && \\
+         docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/ascentangularapp | awk \'{print $1 }\' | xargs -I {} docker rm {} -f && \\
          sudo kill -9 $(sudo lsof -t -i:80) && \\
-         docker build . -t $DOCKER_REPO/verybasicchatapp:$GIT_COMMIT -t $DOCKER_REPO/verybasicchatapp:latest && \\
+         docker build . -t $DOCKER_REPO/ascentangularapp:$GIT_COMMIT -t $DOCKER_REPO/ascentangularapp:latest && \\
          echo "docker image was built and tagged" && \\
          docker image ls 
          '''
@@ -29,12 +29,12 @@ pipeline {
         }
         stage ('Push to Docker Hub') { 
        steps{                 
-         dir('/var/lib/jenkins/workspace/DockerCICDPipelineProject') {
+         dir('/var/lib/jenkins/workspace/ProjectAngularDockerPipeline') {
          
          sh '''echo $DOCKER_HUB_PASS | docker login --username=$DOCKER_REPO --password-stdin && \\
          echo "Docker login successful" && \\
-         docker push $DOCKER_REPO/verybasicchatapp:$GIT_COMMIT && \\
-         docker push $DOCKER_REPO/verybasicchatapp:latest && \\
+         docker push $DOCKER_REPO/ascentangularapp:$GIT_COMMIT && \\
+         docker push $DOCKER_REPO/ascentangularapp:latest && \\
          echo "Docker image was pushed" 
          '''
         }
@@ -42,7 +42,7 @@ pipeline {
         }
          stage ('Kill existing containers and prune dangling images') { 
          steps{                  
-         dir('/var/lib/jenkins/workspace/DockerCICDPipelineProject') {
+         dir('/var/lib/jenkins/workspace/ProjectAngularDockerPipeline') {
          
          sh '''
          docker system prune -f && \\
@@ -55,14 +55,14 @@ pipeline {
         
         stage ('Pull') { 
        steps{                 
-        dir('/var/lib/jenkins/workspace/DockerCICDPipelineProject') {
+        dir('/var/lib/jenkins/workspace/ProjectAngularDockerPipeline') {
         sh '''echo $DOCKER_HUB_PASS | docker login --username=$DOCKER_REPO --password-stdin && \\
-        docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/verybasicchatapp | awk \'{print $1 }\' | xargs -I {} docker stop {}  && \\
-        docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/verybasicchatapp | awk \'{print $1 }\' | xargs -I {} docker rm {} -f && \\
+        docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/ascentangularapp | awk \'{print $1 }\' | xargs -I {} docker stop {}  && \\
+        docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/ascentangularapp | awk \'{print $1 }\' | xargs -I {} docker rm {} -f && \\
         sudo kill -9 $(sudo lsof -t -i:80) && \\
         echo "Running containers, stopped containers removed" && \\
         docker ps -a && \\
-        docker image rm $(docker images --filter=reference=$DOCKER_REPO/verybasicchatapp --format "{{.ID}}") -f && \\
+        docker image rm $(docker images --filter=reference=$DOCKER_REPO/ascentangularapp --format "{{.ID}}") -f && \\
         echo "All the images removed" && \\
         docker image ls && \\
         docker pull $DOCKER_REPO/verybasicchatapp && \\
@@ -73,9 +73,9 @@ pipeline {
         }
         stage ('Run') { 
         steps{                 
-        dir('/var/lib/jenkins/workspace/DockerCICDPipelineProject') {
+        dir('/var/lib/jenkins/workspace/ProjectAngularDockerPipeline') {
         sh ''' echo "image is being run" && \\
-        docker container run -p  80:8082 -d $DOCKER_REPO/verybasicchatapp && \\
+        docker container run -p  80:80 -d $DOCKER_REPO/ascentangularapp && \\
         echo "command executed "'''
         }
         }
