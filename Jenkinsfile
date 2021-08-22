@@ -75,7 +75,7 @@ pipeline {
         steps{                 
         dir('/var/lib/jenkins/workspace/ProjectAngularDockerPipeline') {
         sh ''' echo "image is being run" && \\
-        docker container run -p  80:80 -d $DOCKER_REPO/ascentangularapp && \\
+        docker container run -p  8081:80 -d $DOCKER_REPO/ascentangularapp && \\
         echo "command executed "'''
         }
         }
