@@ -17,8 +17,9 @@ pipeline {
          steps{               
          dir('/var/lib/jenkins/workspace/ProjectAngularDockerPipeline') {
          
-         sh '''docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/ascentangularapp | awk \'{print $1 }\' | xargs -I {} docker stop {}  && \\
-         docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/ascentangularapp | awk \'{print $1 }\' | xargs -I {} docker rm {} -f && \\
+         sh '''#docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/ascentangularapp | awk \'{print $1 }\' | xargs -I {} docker stop {}  && \\
+         #docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/ascentangularapp | awk \'{print $1 }\' | xargs -I {} docker rm {} -f && \\
+         docker-compose down && \\
          sudo kill -9 $(sudo lsof -t -i:8081) && \\
          docker build . -t $DOCKER_REPO/ascentangularapp:$GIT_COMMIT -t $DOCKER_REPO/ascentangularapp:latest && \\
          echo "docker image was built and tagged" && \\
@@ -57,8 +58,8 @@ pipeline {
        steps{                 
         dir('/var/lib/jenkins/workspace/ProjectAngularDockerPipeline') {
         sh '''echo $DOCKER_HUB_PASS | docker login --username=$DOCKER_REPO --password-stdin && \\
-        docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/ascentangularapp | awk \'{print $1 }\' | xargs -I {} docker stop {}  && \\
-        docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/ascentangularapp | awk \'{print $1 }\' | xargs -I {} docker rm {} -f && \\
+        #docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/ascentangularapp | awk \'{print $1 }\' | xargs -I {} docker stop {}  && \\
+        #docker ps -a | awk \'{ print $1,$2 }\' | grep $DOCKER_REPO/ascentangularapp | awk \'{print $1 }\' | xargs -I {} docker rm {} -f && \\
         sudo kill -9 $(sudo lsof -t -i:8081) && \\
         echo "Running containers, stopped containers removed" && \\
         docker ps -a && \\
@@ -75,7 +76,8 @@ pipeline {
         steps{                 
         dir('/var/lib/jenkins/workspace/ProjectAngularDockerPipeline') {
         sh ''' echo "image is being run" && \\
-        docker container run -p  8081:80 -d $DOCKER_REPO/ascentangularapp && \\
+        #docker container run -p  8081:80 -d $DOCKER_REPO/ascentangularapp && \\
+        docker-compose up -d && \\
         echo "command executed "'''
         }
         }
